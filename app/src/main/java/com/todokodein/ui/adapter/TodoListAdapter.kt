@@ -2,6 +2,7 @@ package com.todokodein.ui.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,10 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.RecyclerView
+import com.todokodein.R
 import com.todokodein.data.db.entity.TodoItemEntity
+import kotlinx.android.synthetic.main.list_item.view.*
 
 class TodoListAdapter(
     activity: Activity,
@@ -34,17 +38,48 @@ class TodoListAdapter(
 
         var view = convertView
         if (view == null) {
-            view = mInflater.inflate()
+            view = mInflater.inflate(R.layout.list_item, null)
+
+            holder = ViewHolder()
+            holder.checkbox = view.checkbox
+            holder.tvTitle = view.tvTitle
+            holder.ivEdit = view.ivEdit
+            holder.ivDelete = view.ivDelete
+
+            view.tag = holder
+        } else {
+            holder = view.tag as ViewHolder
         }
+
+        val item = data.value?.get(position)
+
+        holder.checkbox!!.isChecked = item!!.isChecked
+        if (item.isChecked) {
+            holder.tvTitle!!.paintFlags = holder.tvTitle!!.paintFlags or STRIKE_THRU_TEXT_FLAG
+        }
+
+        holder.tvTitle!!.text = item.title
+
+        holder.ivEdit!!.setOnClickListener {
+            callback.editItem(item)
+        }
+        holder.ivDelete!!.setOnClickListener {
+            callback.deleteItem(item)
+        }
+
+        return view!!
     }
 
     override fun getItem(position: Int): Any {
+        return data.value!![position]
     }
 
     override fun getItemId(position: Int): Long {
+        return data.value!![position].id.toLong()
     }
 
     override fun getCount(): Int {
+        return data.value!!.size
     }
 
     private inner class ViewHolder{

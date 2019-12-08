@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ToDoKodein</string>
+    <string name="edit_button">Edit</string>
+    <string name="delete_button">Delete</string>
 </resources>
