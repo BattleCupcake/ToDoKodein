@@ -2,4 +2,7 @@
     <string name="app_name">ToDoKodein</string>
     <string name="edit_button">Edit</string>
     <string name="delete_button">Delete</string>
+    <string name="title">Title</string>
+    <string name="empty_todo_placeholder">Add a todo item by clicking the blue circle in the corner</string>
+    <string name="todo_hint">e.g. Finish comp sci project by Sunday</string>
 </resources>
