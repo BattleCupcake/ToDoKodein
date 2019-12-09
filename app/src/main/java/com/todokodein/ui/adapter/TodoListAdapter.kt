@@ -58,6 +58,11 @@ class TodoListAdapter(
             holder.tvTitle!!.paintFlags = holder.tvTitle!!.paintFlags or STRIKE_THRU_TEXT_FLAG
         }
 
+        holder.checkbox!!.setOnCheckedChangeListener { _, isChecked ->
+            item.isChecked = isChecked
+            callback.upsertItem(item)
+        }
+
         holder.tvTitle!!.text = item.title
 
         holder.ivEdit!!.setOnClickListener {
