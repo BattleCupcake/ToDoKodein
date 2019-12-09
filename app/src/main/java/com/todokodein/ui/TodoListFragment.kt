@@ -1,5 +1,6 @@
 package com.todokodein.ui
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,11 +28,7 @@ class TodoListFragment : ScopedFragment(), KodeinAware, TodoListAdapter.TodoList
     private lateinit var viewModel: TodoViewModel
     private lateinit var todoListData: LiveData<out List<TodoItemEntity>>
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.todo_list_fragment, container, false)
     }
 
@@ -58,11 +55,13 @@ class TodoListFragment : ScopedFragment(), KodeinAware, TodoListAdapter.TodoList
         when (todoListData.value!!.isEmpty()) {
             true -> {
                 tvPlaceHolder.visibility = View.GONE
+                lvTodos.visibility = View.GONE
             }
             else -> {
                 val adapter = activity?.let { TodoListAdapter(it, todoListData) }
                 adapter?.setAdapterListener(this)
                 lvTodos.adapter = adapter
+
                 tvPlaceHolder.visibility = View.GONE
                 lvTodos.visibility = View.VISIBLE
             }
@@ -79,6 +78,43 @@ class TodoListFragment : ScopedFragment(), KodeinAware, TodoListAdapter.TodoList
         val dialogLayout = inflater.inflate(R.layout.dialog, null)
         dialogLayout.etTitle.setText(item?.title)
 
+        val dialog = AlertDialog.Builder(activity)
+            .setView(dialogLayout)
+            .setPositiveButton(resources.getString(R.string.save_button), null)
+            .show()
 
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (dialogLayout.etTitle.text.toString().isNotEmpty()) {
+                when (item) {
+                    null -> createTodo(dialogLayout.etTitle.text.toString())
+                    else -> editTodo(item, dialogLayout.etTitle.text.toString())
+                }
+                dialog.dismiss()
+            } else {
+                dialogLayout.tilTitle.error = resources.getString(R.string.dialog_warning)
+            }
+        }
+    }
+
+    private fun createTodo(title: String) {
+        val todoItem = TodoItemEntity(todoListData.value!!.size, title, false)
+        viewModel.upsertTodoItem(todoItem)
+    }
+
+    private fun editTodo(item: TodoItemEntity, title: String) {
+        item.title = title
+        viewModel.upsertTodoItem(item)
+    }
+
+    override fun editItem(item: TodoItemEntity) {
+        showDialog(item)
+    }
+
+    override fun upsertItem(item: TodoItemEntity) {
+        viewModel.upsertTodoItem(item)
+    }
+
+    override fun deleteItem(item: TodoItemEntity) {
+        viewModel.deleteTodoItem(item)
     }
 }

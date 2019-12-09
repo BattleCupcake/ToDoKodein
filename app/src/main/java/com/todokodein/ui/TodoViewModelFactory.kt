@@ -9,6 +9,6 @@ class TodoViewModelFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TodoViewModelFactory(todoRepository) as T
+        return TodoViewModel(todoRepository) as T
     }
 }

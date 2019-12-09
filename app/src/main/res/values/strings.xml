@@ -5,4 +5,7 @@
     <string name="title">Title</string>
     <string name="empty_todo_placeholder">Add a todo item by clicking the blue circle in the corner</string>
     <string name="todo_hint">e.g. Finish comp sci project by Sunday</string>
+    <string name="save_button">Save</string>
+    <string name="dialog_warning">Enter a description before saving</string>
+    <string name="todoListFragmentLabel">Todo List Fragment</string>
 </resources>
